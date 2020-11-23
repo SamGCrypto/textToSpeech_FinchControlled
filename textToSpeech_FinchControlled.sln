@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "textToSpeech_FinchControlled", "textToSpeech_FinchControlled\textToSpeech_FinchControlled.csproj", "{2FCDA785-4D51-42C9-A154-840BA37CFFBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FCDA785-4D51-42C9-A154-840BA37CFFBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FCDA785-4D51-42C9-A154-840BA37CFFBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FCDA785-4D51-42C9-A154-840BA37CFFBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FCDA785-4D51-42C9-A154-840BA37CFFBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC28B24D-E600-4E4C-821D-C9D37A90967D}
+	EndGlobalSection
+EndGlobal
