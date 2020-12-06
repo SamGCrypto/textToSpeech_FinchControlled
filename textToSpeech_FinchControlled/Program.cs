@@ -32,20 +32,51 @@ namespace textToSpeech_FinchControl
             //
             // load grammar elements
             //
+            //
+            //LED GRAMMAR ELEMENTS
+            //
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("red")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("blue")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("forward")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("backward")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("right")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("left")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("stop")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("green")));
+            //
+            //movement commands for the finch
+            //
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement forward")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement backward")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement right")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement left")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement stop")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement quit")));
+            //
+            //Function
+            //
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("ghost")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("temperature F")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("temperature C")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("display temperature C")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("quit")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("continue")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("guess")));
+            //
+            //Calculator terms
+            //
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("calculator")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("0")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("1")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("2")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("3")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("4")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("5")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("6")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("7")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("8")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("9")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("add")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("subtract")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("divide")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("multiply")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("number")));
+
             //
             // add event handler to manage recognized speech
             //
@@ -96,12 +127,18 @@ namespace textToSpeech_FinchControl
                     Console.WriteLine((robotFinch.getTemperature() * 9 / 5) + 32);
                     break;
 
+                case "display temperature C":
+                    DisplayTemperatureC();
+                    break;
+
                 case "guess":
-                    GuessingGame(robotFinch, warningVoice, sender, e);
+                    GuessingGame(robotFinch);
                     break;
+
                 case "calculator":
-                    DisplayCalculatorFunction(warningVoice, sender, e);
+                    CalculatorFunction(warningVoice, sender, e);
                     break;
+
                 case "quit":
                     Console.Clear();
                     //
@@ -111,13 +148,170 @@ namespace textToSpeech_FinchControl
                     recongnitionComplete.WaitOne(500);
                     recongnitionComplete.Set();
                     break;
+                    //
+                    //Movement Functions temporarily put here outside of their method
+                    //requires a way to actively listen to commands
+                    //Working on that
+                    //
+                case "forward":
+                    Console.Clear();
+                    robotFinch.setMotors(150, 150);
+                    break;
+
+                case "stop":
+                    Console.Clear();
+                    robotFinch.setMotors(0, 0);
+                    break;
+
+                case "backward":
+                    Console.Clear();
+                    robotFinch.setMotors(-150, -150);
+                    break;
+
+                case "right":
+                    Console.Clear();
+                    if (robotFinch.isObstacleRightSide() == true)
+                    {
+                        Console.WriteLine("Warning, obstruction on that side..ignoring command.");
+                        warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
+                    }
+                    else
+                    {
+                        robotFinch.setMotors(150, -150);
+                        robotFinch.wait(3000);
+                        robotFinch.setMotors(0, 0);
+                    }
+                    break;
+
+                case "left":
+                    Console.Clear();
+                    if (robotFinch.isObstacleLeftSide() == true)
+                    {
+                        Console.WriteLine("Warning, obstruction on that side..ignoring command.");
+                        warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
+                    }
+                    else
+                    {
+                        robotFinch.setMotors(-150, 150);
+                        robotFinch.wait(3000);
+                        robotFinch.setMotors(0, 0);
+                    }
+                    break;
+            }
+            Console.Clear();
+            DisplayMainMenu();
+        }
+
+        #region CALCULATOR
+
+        private static void CalculatorFunction(SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
+        {
+            DisplayCalculatorFunction();
+            int num1 = 0;
+            int num2 = 0;
+            Console.CursorVisible = false;
+            Console.WriteLine(e.Result.Text);
+            Thread.Sleep(5000);
+            switch (e.Result.Text)
+            {
+                case "multiply":
+                    MultiplicationCalculator(num1, num2);
+                    break;
+
+                case "divide":
+                    if (num2 == 0)
+                    {
+                        Console.WriteLine("ERROR");
+                        Console.WriteLine("cannot divide by zero");
+                    }
+                    else
+                    {
+                        DivideCalculator(num1, num2);
+                    }
+                    break;
+
+                case "subtract":
+                    SubtractCalculator(num1, num2);
+                    break;
+
+                case "add":
+                    AddCalculator(num1, num2);
+                    break;
+
+                case "numbers":
+                    num1 = GetNumber(sender, e);
+                    num2 = GetNumber(sender, e);
+                    break;
             }
         }
-        #region CALCULATOR
-        private static void DisplayCalculatorFunction(SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
+
+        private static int GetNumber(object sender, SpeechRecognizedEventArgs e)
         {
+            int num = 0;
+            string userResponse = null;
+            bool endNow = false;
+            while (!endNow)
+            {
+                Console.WriteLine("Please enter in a series of numbers 9-0.");
+                userResponse = e.Result.ToString();
+                if (userResponse == "continue")
+                {
+                    endNow = true;
+                }
+                else
+                {
+                    try
+                    {
+                        int.TryParse(userResponse, out num);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("That only works with numbers!");
+                        Console.WriteLine("Please try again.");
+                    };
+                }
+            }
+            return num;
         }
-        #endregion
+
+        private static void MultiplicationCalculator(int num1, int num2)
+        {
+            int totalNum;
+            totalNum = num1 * num2;
+            Console.WriteLine($"The Answer is {totalNum}");
+            Console.WriteLine($"The equation.");
+            Console.WriteLine($"{totalNum} = {num1} * {num2}");
+        }
+
+        private static void DivideCalculator(int num1, int num2)
+        {
+            int totalNum;
+            totalNum = num1 / num2;
+            Console.WriteLine($"The Answer is {totalNum}");
+            Console.WriteLine($"The equation.");
+            Console.WriteLine($"{totalNum} = {num1} / {num2}");
+        }
+
+        private static void AddCalculator(int num1, int num2)
+        {
+            int totalNum;
+            totalNum = num1 + num2;
+            Console.WriteLine($"The Answer is {totalNum}");
+            Console.WriteLine($"The equation.");
+            Console.WriteLine($"{totalNum} = {num1} + {num2}");
+        }
+
+        private static void SubtractCalculator(int num1, int num2)
+        {
+            int totalNum;
+            totalNum = num1 - num2;
+            Console.WriteLine($"The Answer is {totalNum}");
+            Console.WriteLine($"The equation.");
+            Console.WriteLine($"{totalNum} = {num1} - {num2}");
+        }
+
+        #endregion CALCULATOR
+
         #region FUNCTIONS
 
         private static void BuildAGhost(SpeechSynthesizer warningVoice)
@@ -134,24 +328,27 @@ namespace textToSpeech_FinchControl
 
         private static void WriteTempatureC(Finch finchRobot)
         {
-            string dataPath = @"Text\TextFile1.txt";
+            string dataPath = @"Data\TextFile1.txt";
             string dataTaken = $"Tempature is: {finchRobot.getTemperature()} Celsius\n At the time of {DateTime.Now}.";
-            using (StreamWriter sw = new StreamWriter(dataPath, true))
-            {
-                sw.WriteLine(dataTaken);
-            }
+            File.WriteAllText(dataTaken, dataPath);
+            Console.WriteLine(dataTaken);
+            Thread.Sleep(10000);
         }
 
-        private static void DisplayTemperatureC(Finch finchRobot, object sender, SpeechRecognizedEventArgs e)
+        private static void DisplayTemperatureC()
         {
-            string dataPath = @"Text\TextFile1.txt";
+            string dataPath = @"Data\TextFile1.txt";
             File.OpenRead(dataPath);
+            Thread.Sleep(10000);
         }
 
         private static void robotMovement(Finch robotFinch, SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
         {
             Console.CursorVisible = false;
-            Console.WriteLine(e.Result.Text);
+            //
+            //TODO- figure out how to get text to speech to clear itself when entering a new method
+            //
+            Console.WriteLine();
             Thread.Sleep(5000);
             switch (e.Result.Text)
             {
@@ -203,35 +400,43 @@ namespace textToSpeech_FinchControl
         }
 
         #endregion FUNCTIONS
+
         #region GUESSING GAME
+
         //
         //Guessing Game Functions within
         //
-        private static void GuessingGame(Finch robotFinch, SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
+        //TODO - FIGURE OUT TEXT TO SPEECH RESET
+        //
+        private static void GuessingGame(Finch robotFinch)
         {
             //
             //Main Menu Display and rules
             //
             DisplayGuessingGameMenu();
             Console.WriteLine("");
+            Thread.Sleep(5000);
             //
             //Initalizing variables
             //
             Random r = new Random();
             int x = r.Next(0, 2);
-            Console.CursorVisible = false;
+            Console.CursorVisible = true;
             string userResponse, robotResponse;
-            Console.WriteLine(e.Result.Text);
             string[] choices = new string[3];
             choices.SetValue("blue", 0);
             choices.SetValue("green", 1);
             choices.SetValue("red", 2);
-            userResponse = e.Result.Text;
             robotResponse = choices[x];
+            //
+            //Temporary fix to allow user to add input into the guessing game
+            //
+            Console.WriteLine("Enter in user response below.");
+            userResponse = Console.ReadLine();
             //
             //This is a simple check for if the response is correct or not
             //
-            if(userResponse == robotResponse)
+            if (userResponse == robotResponse)
             {
                 Console.WriteLine("Congrats you have matched the robots response.");
                 Console.WriteLine($"The robot said: {robotResponse}");
@@ -239,13 +444,14 @@ namespace textToSpeech_FinchControl
                 robotFinch.wait(4000);
                 robotFinch.setLED(0, 0, 0);
             }
-            if(userResponse != robotResponse)
+            if (userResponse != robotResponse)
             {
                 Console.WriteLine("Robot has won");
                 Console.WriteLine($"The robot had said {robotResponse}");
                 Console.WriteLine("Better luck next time.");
             }
         }
+
         //
         //Loop to set the finch LED in response to the answer given
         //
@@ -264,7 +470,9 @@ namespace textToSpeech_FinchControl
                 robotFinch.setLED(0, 0, 255);
             }
         }
-        #endregion
+
+        #endregion GUESSING GAME
+
         #region DISPLAY
 
         private static void DisplayHeader(string displayHeader)
@@ -277,14 +485,26 @@ namespace textToSpeech_FinchControl
         private static void DisplayMainMenu()
         {
             DisplayHeader("Main Menu");
-            Console.WriteLine("\ta) Red");
-            Console.WriteLine("\tb) Blue");
-            Console.WriteLine("\tc) movement");
-            Console.WriteLine("\td) ghost");
-            Console.WriteLine("\te) temperature C");
-            Console.WriteLine("\tf) temperature F");
-            Console.WriteLine("\tg) guess");
+            Console.WriteLine("\t1) Red");
+            Console.WriteLine("\t2) Blue");
+            Console.WriteLine("\t3) movement");
+            Console.WriteLine("\t4) ghost");
+            Console.WriteLine("\t5) temperature C");
+            Console.WriteLine("\t6) temperature F");
+            Console.WriteLine("\t7) guess");
             Console.WriteLine("quit to quit");
+        }
+
+        private static void DisplayMovementMenu()
+        {
+            Console.Clear();
+            DisplayHeader("Movement Menu");
+            Console.WriteLine("\t1) Forward");
+            Console.WriteLine("\t2) Backward");
+            Console.WriteLine("\t3) Left");
+            Console.WriteLine("\t4) Right");
+            Console.WriteLine();
+            Console.WriteLine("Quit to exit program.");
         }
 
         private static void DisplayGuessingGameMenu()
@@ -295,8 +515,8 @@ namespace textToSpeech_FinchControl
             Console.WriteLine("Take a guess and if its correct then you will win!");
             Console.WriteLine("Good luck.");
             Console.WriteLine();
-            Console.WriteLine("Say continue to proceed.");
         }
+
         private static void DisplayCalculatorFunction()
         {
             DisplayHeader("Calculator");
@@ -307,6 +527,7 @@ namespace textToSpeech_FinchControl
             Console.WriteLine("5)Two numbers to enter.");
             Console.WriteLine("Continue.");
         }
+
         #endregion DISPLAY
     }
 }
