@@ -1,5 +1,6 @@
 ﻿using FinchAPI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Speech.Recognition;
 using System.Speech.Synthesis;
@@ -46,7 +47,6 @@ namespace textToSpeech_FinchControl
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("right")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("left")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("stop")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder(" quit")));
             //
             //Function
             //
@@ -60,22 +60,22 @@ namespace textToSpeech_FinchControl
             //
             //Calculator terms
             //
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("calculator")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("0")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("1")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("2")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("3")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("4")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("5")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("6")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("7")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("8")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("9")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("add")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("subtract")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("divide")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("multiply")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("number")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("calculator")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("0")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("1")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("2")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("3")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("4")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("5")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("6")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("7")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("8")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("9")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("add")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("subtract")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("divide")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("multiply")));
+            //recognizer.loadgrammar(new grammar(new grammarbuilder("number")));
 
             //
             // add event handler to manage recognized speech
@@ -110,11 +110,6 @@ namespace textToSpeech_FinchControl
                 case "blue":
                     robotFinch.setLED(0, 0, 250);
                     break;
-
-                //case "movement":
-                //  robotMovement(robotFinch, warningVoice, sender, e);
-                //  break;
-
                 case "ghost":
                     BuildAGhost(warningVoice);
                     break;
@@ -135,9 +130,12 @@ namespace textToSpeech_FinchControl
                     GuessingGame(robotFinch);
                     break;
 
-                case "calculator":
-                    CalculatorFunction(warningVoice, sender, e);
-                    break;
+                //case "calculator":
+                //  CalculatorFunction(warningVoice, sender, e);
+                  //break;
+                  //case "movement":
+                //  robotMovement(robotFinch, warningVoice, sender, e);
+                //  break;
 
                 case "quit":
                     Console.Clear();
@@ -496,7 +494,26 @@ namespace textToSpeech_FinchControl
             Console.WriteLine("\t5) temperature C");
             Console.WriteLine("\t6) temperature F");
             Console.WriteLine("\t7) guess");
+            Console.WriteLine("\t8) forward");
+            Console.WriteLine("\t9) backward");
+            Console.WriteLine("\t10) left");
+            Console.WriteLine("\t11) right");
+            Console.WriteLine("\t12) stop");
             Console.WriteLine("quit to quit");
+        }
+
+        private static void Disclaimer()
+        {
+            SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
+            speechSynthesizer.Speak("Hello, pardon the intrusion.");
+            Thread.Sleep(1000);
+            speechSynthesizer.Speak("Some features of this program aren't available.");
+            speechSynthesizer.Speak("Kind of like the lackluster menu interface.");
+            Thread.Sleep(1000);
+            speechSynthesizer.Speak("This is a mostly vocal based software and is not meant to use visual format.");
+            speechSynthesizer.Speak("The commands are listed as they should be given.");
+            speechSynthesizer.Speak("Certain commands will lead you to things that require input currently.");
+            speechSynthesizer.Speak("Thank you for your patience, onto the program.");
         }
 
         private static void DisplayMovementMenu()
