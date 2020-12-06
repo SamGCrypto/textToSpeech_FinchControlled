@@ -106,7 +106,9 @@ namespace textToSpeech_FinchControl
                 case "red":
                     robotFinch.setLED(250, 0, 0);
                     break;
-
+                case "green":
+                    robotFinch.setLED(0, 250, 0);
+                    break;
                 case "blue":
                     robotFinch.setLED(0, 0, 250);
                     break;
@@ -339,7 +341,9 @@ namespace textToSpeech_FinchControl
         private static void DisplayTemperatureC()
         {
             string dataPath = @"Data\TextFile1.txt";
-            File.ReadAllText(dataPath);
+            string[] holding;
+            holding = File.ReadAllLines(dataPath);
+            Console.WriteLine(holding);
             Thread.Sleep(10000);
         }
 
