@@ -41,12 +41,12 @@ namespace textToSpeech_FinchControl
             //
             //movement commands for the finch
             //
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement forward")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement backward")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement right")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement left")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement stop")));
-            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("movement quit")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("forward")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("backward")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("right")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("left")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("stop")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder(" quit")));
             //
             //Function
             //
@@ -111,9 +111,9 @@ namespace textToSpeech_FinchControl
                     robotFinch.setLED(0, 0, 250);
                     break;
 
-                case "movement":
-                    robotMovement(robotFinch, warningVoice, sender, e);
-                    break;
+                //case "movement":
+                //  robotMovement(robotFinch, warningVoice, sender, e);
+                //  break;
 
                 case "ghost":
                     BuildAGhost(warningVoice);
@@ -328,9 +328,12 @@ namespace textToSpeech_FinchControl
 
         private static void WriteTempatureC(Finch finchRobot)
         {
+            //
+            //TODO Add in number of times data is gathered.
+            //
             string dataPath = @"Data\TextFile1.txt";
             string dataTaken = $"Tempature is: {finchRobot.getTemperature()} Celsius\n At the time of {DateTime.Now}.";
-            File.WriteAllText(dataTaken, dataPath);
+            File.WriteAllText(dataPath, dataTaken);
             Console.WriteLine(dataTaken);
             Thread.Sleep(10000);
         }
@@ -338,66 +341,66 @@ namespace textToSpeech_FinchControl
         private static void DisplayTemperatureC()
         {
             string dataPath = @"Data\TextFile1.txt";
-            File.OpenRead(dataPath);
+            File.ReadAllText(dataPath);
             Thread.Sleep(10000);
         }
 
-        private static void robotMovement(Finch robotFinch, SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
-        {
-            Console.CursorVisible = false;
-            //
-            //TODO- figure out how to get text to speech to clear itself when entering a new method
-            //
-            Console.WriteLine();
-            Thread.Sleep(5000);
-            switch (e.Result.Text)
-            {
-                case "forward":
-                    Console.Clear();
-                    robotFinch.setMotors(150, 150);
-                    break;
+        //private static void robotMovement(Finch robotFinch, SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
+        //{
+        //    Console.CursorVisible = false;
+        //    //
+        //    //TODO- figure out how to get text to speech to clear itself when entering a new method
+        //    //
+        //    Console.WriteLine();
+        //    Thread.Sleep(5000);
+        //    switch (e.Result.Text)
+        //    {
+        //        case "forward":
+        //            Console.Clear();
+        //            robotFinch.setMotors(150, 150);
+        //            break;
 
-                case "stop":
-                    Console.Clear();
-                    robotFinch.setMotors(0, 0);
-                    break;
+        //        case "stop":
+        //            Console.Clear();
+        //            robotFinch.setMotors(0, 0);
+        //            break;
 
-                case "backward":
-                    Console.Clear();
-                    robotFinch.setMotors(-150, -150);
-                    break;
+        //        case "backward":
+        //            Console.Clear();
+        //            robotFinch.setMotors(-150, -150);
+        //            break;
 
-                case "right":
-                    Console.Clear();
-                    if (robotFinch.isObstacleRightSide() == true)
-                    {
-                        Console.WriteLine("Warning, obstruction on that side..ignoring command.");
-                        warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
-                    }
-                    else
-                    {
-                        robotFinch.setMotors(150, -150);
-                        robotFinch.wait(3000);
-                        robotFinch.setMotors(0, 0);
-                    }
-                    break;
+        //        case "right":
+        //            Console.Clear();
+        //            if (robotFinch.isObstacleRightSide() == true)
+        //            {
+        //                Console.WriteLine("Warning, obstruction on that side..ignoring command.");
+        //                warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
+        //            }
+        //            else
+        //            {
+        //                robotFinch.setMotors(150, -150);
+        //                robotFinch.wait(3000);
+        //                robotFinch.setMotors(0, 0);
+        //            }
+        //            break;
 
-                case "left":
-                    Console.Clear();
-                    if (robotFinch.isObstacleLeftSide() == true)
-                    {
-                        Console.WriteLine("Warning, obstruction on that side..ignoring command.");
-                        warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
-                    }
-                    else
-                    {
-                        robotFinch.setMotors(-150, 150);
-                        robotFinch.wait(3000);
-                        robotFinch.setMotors(0, 0);
-                    }
-                    break;
-            }
-        }
+        //        case "left":
+        //            Console.Clear();
+        //            if (robotFinch.isObstacleLeftSide() == true)
+        //            {
+        //                Console.WriteLine("Warning, obstruction on that side..ignoring command.");
+        //                warningVoice.Speak("Warning, obstruction on that side..ignoring command.");
+        //            }
+        //            else
+        //            {
+        //                robotFinch.setMotors(-150, 150);
+        //                robotFinch.wait(3000);
+        //                robotFinch.setMotors(0, 0);
+        //            }
+        //            break;
+        //    }
+        //}
 
         #endregion FUNCTIONS
 
@@ -449,6 +452,7 @@ namespace textToSpeech_FinchControl
                 Console.WriteLine("Robot has won");
                 Console.WriteLine($"The robot had said {robotResponse}");
                 Console.WriteLine("Better luck next time.");
+                Thread.Sleep(5000);
             }
         }
 
