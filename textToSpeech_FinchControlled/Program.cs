@@ -502,6 +502,7 @@ namespace textToSpeech_FinchControl
             DisplayHeader("Main Menu");
             Console.WriteLine("\t1) Red");
             Console.WriteLine("\t2) Blue");
+            Console.WriteLine("\t2) Green");
             Console.WriteLine("\t3) movement");
             Console.WriteLine("\t4) ghost");
             Console.WriteLine("\t5) temperature C");
