@@ -66,6 +66,7 @@ namespace textToSpeech_FinchControl
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("quit")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("continue")));
             recognizer.LoadGrammar(new Grammar(new GrammarBuilder("guess")));
+            recognizer.LoadGrammar(new Grammar(new GrammarBuilder("Speak Temperature C")));
             //
             //Calculator terms
             //
@@ -163,6 +164,10 @@ namespace textToSpeech_FinchControl
                     //Working on that
                     //
                 case "forward":
+                    Console.Clear();
+                    robotFinch.setMotors(150, 150);
+                    break;
+                case "Speak Temperature C":
                     Console.Clear();
                     robotFinch.setMotors(150, 150);
                     break;
@@ -355,6 +360,17 @@ namespace textToSpeech_FinchControl
             Console.WriteLine(holding);
             Thread.Sleep(10000);
         }
+        private static void SpeakTemperatureC(SpeechSynthesizer s)
+        {
+            string dataPath = @"Data\TextFile1.txt";
+            string[] holding;
+            holding = File.ReadAllLines(dataPath);
+            for (int i = 0; i < holding.Length; i++)
+            {
+                s.Speak(holding[i]);
+            } 
+            Thread.Sleep(10000);
+        }
 
         //private static void robotMovement(Finch robotFinch, SpeechSynthesizer warningVoice, object sender, SpeechRecognizedEventArgs e)
         //{
@@ -529,7 +545,6 @@ namespace textToSpeech_FinchControl
             speechSynthesizer.Speak("Certain commands will lead you to things that require input currently.");
             speechSynthesizer.Speak("Thank you for your patience, onto the program.");
         }
-
         private static void DisplayMovementMenu()
         {
             Console.Clear();
