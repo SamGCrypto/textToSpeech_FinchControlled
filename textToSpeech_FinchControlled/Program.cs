@@ -8,12 +8,21 @@ using System.Threading;
 
 namespace textToSpeech_FinchControl
 {
+    //*************************************//
+    //Author: Samuel Gorcyca
+    //Date:12/5/20
+    //Assignment: CIT 110 Capstone
+    //Program Description: Speech to Text AI
+    //**************************************//
     internal class Program
     {
         private static ManualResetEvent recongnitionComplete;
 
         private static void Main(string[] args)
         {
+            //
+            //TODO: Investigate looping function of Speech Class
+            //
             DisplayMainMenu();
             Finch myFinch = new Finch();
             Console.CursorVisible = false;
